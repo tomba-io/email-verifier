@@ -217,7 +217,7 @@ Troubleshoot processing issues and API errors
 ### API Documentation
 
 - [Tomba API Docs](https://tomba.io/api) - Complete API reference
-- [Email Verifier Endpoint](https://tomba.io/api#email-verifier) - Specific verification documentation
+- [Email Verifier Endpoint](https://docs.tomba.io/api/verifier#email-verifier) - Specific verification documentation
 - [Authentication Guide](https://app.tomba.io/api) - Get your API keys
 - [Pricing & Limits](https://tomba.io/pricing) - Understand rate limits and costs
 
