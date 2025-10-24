@@ -1,0 +1,46 @@
+{
+    "title": "Tomba Email Verifier Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "tombaApiKey": {
+            "title": "Tomba API Key",
+            "type": "string",
+            "description": "Your Tomba API key (starts with 'ta_'). Get it from https://app.tomba.io/api",
+            "editor": "textfield",
+            "isSecret": true,
+            "example": "ta_xxxxxxxxxxxxxxxxxxxx"
+        },
+        "tombaApiSecret": {
+            "title": "Tomba API Secret",
+            "type": "string",
+            "description": "Your Tomba API secret (starts with 'ts_'). Get it from https://app.tomba.io/api",
+            "editor": "textfield",
+            "isSecret": true,
+            "example": "ts_xxxxxxxxxxxxxxxxxxxx"
+        },
+        "emails": {
+            "title": "Email Addresses",
+            "type": "array",
+            "description": "List of email addresses to verify for validity and deliverability",
+            "editor": "stringList",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 1000,
+            "example": ["john@example.com", "jane@company.com", "test@domain.org"]
+        },
+        "maxResults": {
+            "title": "Maximum Results",
+            "type": "integer",
+            "description": "Maximum number of emails to process (default: 50, max: 1000)",
+            "editor": "number",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000,
+            "example": 50
+        }
+    },
+    "required": ["tombaApiKey", "tombaApiSecret", "emails"]
+}

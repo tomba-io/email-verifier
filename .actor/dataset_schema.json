@@ -1,0 +1,233 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "type": "object",
+        "properties": {
+            "email": {
+                "type": "object",
+                "description": "Email verification data object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "The email address that was verified"
+                    },
+                    "result": {
+                        "type": ["string", "null"],
+                        "description": "Verification result (deliverable, undeliverable, risky, unknown)"
+                    },
+                    "status": {
+                        "type": ["string", "null"],
+                        "description": "Email status (valid, invalid, risky, unknown)"
+                    },
+                    "score": {
+                        "type": ["number", "null"],
+                        "description": "Verification confidence score (0-100)"
+                    },
+                    "smtp_provider": {
+                        "type": ["string", "null"],
+                        "description": "SMTP provider name (e.g., Google Workspace)"
+                    },
+                    "mx": {
+                        "type": ["object", "null"],
+                        "description": "MX records information",
+                        "properties": {
+                            "records": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "List of MX record servers"
+                            }
+                        }
+                    },
+                    "mx_check": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether MX records check passed"
+                    },
+                    "smtp_server": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether SMTP server is reachable"
+                    },
+                    "smtp_check": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether SMTP check was performed successfully"
+                    },
+                    "accept_all": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the domain accepts all emails"
+                    },
+                    "greylisted": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email is greylisted"
+                    },
+                    "block": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email is blocked"
+                    },
+                    "gibberish": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email appears to be gibberish"
+                    },
+                    "disposable": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email is from a disposable email provider"
+                    },
+                    "webmail": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email is from a webmail provider"
+                    },
+                    "regex": {
+                        "type": ["boolean", "null"],
+                        "description": "Whether the email passes regex validation"
+                    },
+                    "whois": {
+                        "type": ["object", "null"],
+                        "description": "Domain WHOIS information",
+                        "properties": {
+                            "registrar_name": {
+                                "type": "string",
+                                "description": "Domain registrar name"
+                            },
+                            "referral_url": {
+                                "type": "string",
+                                "description": "Registrar referral URL"
+                            },
+                            "created_date": {
+                                "type": "string",
+                                "description": "Domain creation date"
+                            }
+                        }
+                    }
+                }
+            },
+            "sources": {
+                "type": ["array", "null"],
+                "description": "Sources where the email was found",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "description": "Source URI where email was found"
+                        },
+                        "website_url": {
+                            "type": "string",
+                            "description": "Website URL of the source"
+                        },
+                        "extracted_on": {
+                            "type": "string",
+                            "description": "Date when email was extracted"
+                        },
+                        "last_seen_on": {
+                            "type": "string",
+                            "description": "Date when email was last seen"
+                        },
+                        "still_on_page": {
+                            "type": "boolean",
+                            "description": "Whether email is still on the page"
+                        }
+                    }
+                }
+            },
+            "input": {
+                "type": "string",
+                "description": "Original input email address"
+            },
+            "error": {
+                "type": ["string", "null"],
+                "description": "Error message if verification failed"
+            }
+        },
+        "required": ["email", "input"]
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "email.email",
+                    "email.result",
+                    "email.status",
+                    "email.score",
+                    "email.disposable",
+                    "email.webmail",
+                    "email.smtp_provider"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "email.email": {
+                        "label": "Email"
+                    },
+                    "email.result": {
+                        "label": "Result"
+                    },
+                    "email.status": {
+                        "label": "Status"
+                    },
+                    "email.score": {
+                        "label": "Score"
+                    },
+                    "email.disposable": {
+                        "label": "Disposable"
+                    },
+                    "email.webmail": {
+                        "label": "Webmail"
+                    },
+                    "email.smtp_provider": {
+                        "label": "Provider"
+                    }
+                }
+            }
+        },
+        "detailed": {
+            "title": "Detailed View",
+            "transformation": {
+                "fields": [
+                    "email.email",
+                    "email.result",
+                    "email.status",
+                    "email.score",
+                    "email.smtp_provider",
+                    "email.regex",
+                    "email.gibberish",
+                    "email.disposable",
+                    "email.webmail",
+                    "email.mx_check",
+                    "email.smtp_server",
+                    "email.smtp_check",
+                    "email.accept_all",
+                    "email.greylisted",
+                    "email.block",
+                    "email.whois",
+                    "sources",
+                    "input"
+                ]
+            },
+            "display": {
+                "component": "table"
+            }
+        },
+        "sources": {
+            "title": "Source Analysis",
+            "transformation": {
+                "fields": ["email.email", "email.score", "sources"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "email.email": {
+                        "label": "Email"
+                    },
+                    "email.score": {
+                        "label": "Score"
+                    },
+                    "sources": {
+                        "label": "Sources Found"
+                    }
+                }
+            }
+        }
+    }
+}

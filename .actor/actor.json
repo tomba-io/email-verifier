@@ -1,0 +1,12 @@
+{
+    "actorSpecification": 1,
+    "name": "email-verifier",
+    "title": "Tomba Email Verifier",
+    "description": "Email verification service using Tomba API.",
+    "version": "0.0",
+    "buildTag": "latest",
+    "meta": {
+        "templateId": "ts-empty"
+    },
+    "dockerfile": "../Dockerfile"
+}
