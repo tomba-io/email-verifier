@@ -242,7 +242,7 @@ Troubleshoot processing issues and API errors
 
 ## Keywords
 
-email verification, email validation, email checker, deliverability, bounce detection, email quality, contact validation, email hygiene, Tomba API, Apify actor, email list cleaning, invalid emails, verification service, email testing
+email verification, email validation, email checker, deliverability, bounce detection, email quality, contact validation, email hygiene, email list cleaning, invalid emails, verification service, email testing
 
 ## Support
 
