@@ -1,0 +1,14 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Email Verifier Output",
+    "description": "Output from Tomba Email Verifier Actor - email verification and deliverability results",
+    "type": "object",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Email Verification Results",
+            "description": "Email verification with deliverability status and quality scores",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}
