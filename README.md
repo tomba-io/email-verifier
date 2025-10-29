@@ -240,6 +240,77 @@ Troubleshoot processing issues and API errors
 - **Result Interpretation**: Use score and multiple flags for decision making
 - **Regular Cleaning**: Periodically re-verify older email lists
 
+## FAQ
+
+### General Questions
+
+**Q: What does email verification do?**
+A: Email verification checks if an email address is valid, deliverable, and safe to send to. It validates syntax, domain existence, mailbox availability, and identifies risky addresses.
+
+**Q: How accurate is email verification?**
+A: Tomba's verification is highly accurate (95%+) for most standard email providers. Results include confidence scores and detailed status information to help you make informed decisions.
+
+**Q: What's the difference between syntax and deliverability checking?**
+A: Syntax checking validates the email format (user@domain.com), while deliverability checking contacts the mail server to verify the mailbox actually exists and can receive mail.
+
+### Verification Results
+
+**Q: What do the different verification statuses mean?**
+A:
+
+- **Valid**: Email exists and can receive mail
+- **Invalid**: Email doesn't exist or can't receive mail
+- **Risky**: Email might bounce or be problematic
+- **Unknown**: Verification couldn't be completed
+
+**Q: What is a verification score?**
+A: Scores range 0-100 indicating confidence level. 90+ is high confidence, 70-89 is moderate, below 70 suggests caution. Use scores along with status for best results.
+
+**Q: What are catch-all domains?**
+A: Catch-all domains accept emails to any address at that domain, even non-existent ones. They're marked as "risky" because you can't verify if the specific mailbox exists.
+
+**Q: How should I handle "risky" emails?**
+A: Risky emails might include catch-all domains, role accounts, or temporary emails. Consider your use case - they might be fine for newsletters but problematic for transactional emails.
+
+### Technical Questions
+
+**Q: How many emails can I verify at once?**
+A: You can submit up to 1000 emails per run. For optimal performance, process 50-200 emails per batch.
+
+**Q: What are the rate limits?**
+A: The Actor automatically handles Tomba's rate limits. Large batches will be processed with appropriate delays to stay within limits.
+
+**Q: Can I verify emails in real-time?**
+A: Yes, but for real-time use cases, consider the API response time (typically 1-3 seconds per email). Batch processing is more efficient for large lists.
+
+**Q: Do you store or cache verification results?**
+A: Tomba may cache results temporarily for performance. The Actor doesn't store your email lists - data is processed and returned through Apify's secure infrastructure.
+
+### Email List Management
+
+**Q: How often should I re-verify emails?**
+A: Re-verify emails every 3-6 months, as email validity changes over time. High-bounce lists may need more frequent verification.
+
+**Q: Should I remove all risky emails?**
+A: Not necessarily. Review risky emails case-by-case. Some might be legitimate business emails that are just hard to verify due to server configurations.
+
+**Q: What about role-based emails (info@, sales@)?**
+A: Role emails are flagged as "role-based" but may still be valid for business communications. Consider your specific use case.
+
+**Q: How do I handle large email lists?**
+A: Break large lists into smaller batches (200-500 emails). Monitor your API quota and consider Tomba's higher-tier plans for volume processing.
+
+### Privacy & Compliance
+
+**Q: Is email verification GDPR compliant?**
+A: Yes, verification only checks deliverability without accessing email content. However, ensure you have permission to verify the email addresses you're checking.
+
+**Q: Do you notify email owners during verification?**
+A: No, verification is done through server-level checks that don't send actual emails or notify the email owners.
+
+**Q: Can I verify international email addresses?**
+A: Yes, Tomba supports verification for email addresses worldwide, including international domains and various country-specific providers.
+
 ## Keywords
 
 email verification, email validation, email checker, deliverability, bounce detection, email quality, contact validation, email hygiene, email list cleaning, invalid emails, verification service, email testing
