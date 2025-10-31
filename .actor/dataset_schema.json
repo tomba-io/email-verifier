@@ -33,7 +33,7 @@
                         "description": "MX records information",
                         "properties": {
                             "records": {
-                                "type": "array",
+                                "type": ["array", "null"],
                                 "items": {
                                     "type": "string"
                                 },
@@ -86,15 +86,15 @@
                         "description": "Domain WHOIS information",
                         "properties": {
                             "registrar_name": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Domain registrar name"
                             },
                             "referral_url": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Registrar referral URL"
                             },
                             "created_date": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Domain creation date"
                             }
                         }
