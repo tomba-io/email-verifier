@@ -1,0 +1,373 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tomba Email Verifier API",
+        "version": "1.0.0",
+        "description": "Real-time API (Apify Standby mode). Verify email addresses for validity and deliverability, optionally with linked phone numbers. $0.00312 per credit: a verification costs 1 credit ($0.00312); with `enrichMobile` on, each phone number returned adds 5 credits ($0.0156). Deliverable, undeliverable and risky verdicts are charged; missing verdicts, errors and cached results are free."
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Verify one or more emails",
+                "description": "Without query parameters, returns a short usage note (also used as the readiness probe).",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email address to verify. Repeat the parameter or separate values with commas for several emails.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "info@tomba.io"
+                    },
+                    {
+                        "name": "emails",
+                        "in": "query",
+                        "description": "Alias of `email`.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "enrichMobile",
+                        "in": "query",
+                        "description": "Also return the phone numbers linked to the email in `phone_data` (5 extra credits per phone number returned).",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "example": false
+                    },
+                    {
+                        "name": "webhookUrl",
+                        "in": "query",
+                        "description": "Optional URL that Tomba notifies when a result is ready (sent to Tomba as `webhook_url`).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^https?://"
+                        }
+                    },
+                    {
+                        "name": "maxResults",
+                        "in": "query",
+                        "description": "Maximum number of verification results to return (default 50).",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Results"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Error"
+                    },
+                    "402": {
+                        "$ref": "#/components/responses/Error"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Verify emails using a JSON input",
+                "description": "Accepts the same JSON input as a normal Actor run.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "emails": {
+                                        "type": "array",
+                                        "description": "List of email addresses to verify for validity and deliverability",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 1000,
+                                        "example": ["john@example.com", "jane@company.com", "test@domain.org"]
+                                    },
+                                    "maxResults": {
+                                        "type": "integer",
+                                        "description": "Maximum number of emails to process (default: 50, max: 1000)",
+                                        "default": 50,
+                                        "minimum": 1,
+                                        "maximum": 1000,
+                                        "example": 50
+                                    },
+                                    "enrichMobile": {
+                                        "type": "boolean",
+                                        "description": "Also return the phone numbers linked to the email in `phone_data`. Each phone number returned adds 5 credits to the 1 verification credit; results without phone data still cost 1 credit.",
+                                        "default": false
+                                    },
+                                    "webhookUrl": {
+                                        "type": "string",
+                                        "description": "Optional URL that Tomba notifies when a result is ready (sent to Tomba as `webhook_url`).",
+                                        "pattern": "^https?://",
+                                        "example": "https://example.com/tomba-webhook"
+                                    }
+                                },
+                                "required": ["emails"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Results"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Error"
+                    },
+                    "402": {
+                        "$ref": "#/components/responses/Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "Results": {
+                "description": "Verification results, in the same format as the dataset items.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EmailVerification"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Error": {
+                "description": "Invalid input (400) or the run's max charge limit was reached (402).",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "EmailVerification": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "object",
+                        "description": "Email verification data object",
+                        "properties": {
+                            "email": {
+                                "type": "string",
+                                "description": "The email address that was verified"
+                            },
+                            "result": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Verification result (deliverable, undeliverable, risky, unknown)"
+                            },
+                            "status": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Email status (valid, invalid, risky, unknown)"
+                            },
+                            "score": {
+                                "type": "number",
+                                "nullable": true,
+                                "description": "Verification confidence score (0-100)"
+                            },
+                            "smtp_provider": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "SMTP provider name (e.g., Google Workspace)"
+                            },
+                            "mx": {
+                                "type": "object",
+                                "nullable": true,
+                                "description": "MX records information",
+                                "properties": {
+                                    "records": {
+                                        "type": "array",
+                                        "nullable": true,
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of MX record servers"
+                                    }
+                                }
+                            },
+                            "mx_check": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether MX records check passed"
+                            },
+                            "smtp_server": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether SMTP server is reachable"
+                            },
+                            "smtp_check": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether SMTP check was performed successfully"
+                            },
+                            "accept_all": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the domain accepts all emails"
+                            },
+                            "greylisted": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email is greylisted"
+                            },
+                            "block": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email is blocked"
+                            },
+                            "gibberish": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email appears to be gibberish"
+                            },
+                            "disposable": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email is from a disposable email provider"
+                            },
+                            "webmail": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email is from a webmail provider"
+                            },
+                            "regex": {
+                                "type": "boolean",
+                                "nullable": true,
+                                "description": "Whether the email passes regex validation"
+                            },
+                            "whois": {
+                                "type": "object",
+                                "nullable": true,
+                                "description": "Domain WHOIS information",
+                                "properties": {
+                                    "registrar_name": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "description": "Domain registrar name"
+                                    },
+                                    "referral_url": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "description": "Registrar referral URL"
+                                    },
+                                    "created_date": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "description": "Domain creation date"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "sources": {
+                        "type": "array",
+                        "nullable": true,
+                        "description": "Sources where the email was found",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "uri": {
+                                    "type": "string",
+                                    "description": "Source URI where email was found"
+                                },
+                                "website_url": {
+                                    "type": "string",
+                                    "description": "Website URL of the source"
+                                },
+                                "extracted_on": {
+                                    "type": "string",
+                                    "description": "Date when email was extracted"
+                                },
+                                "last_seen_on": {
+                                    "type": "string",
+                                    "description": "Date when email was last seen"
+                                },
+                                "still_on_page": {
+                                    "type": "boolean",
+                                    "description": "Whether email is still on the page"
+                                }
+                            }
+                        }
+                    },
+                    "input": {
+                        "type": "string",
+                        "description": "Original input email address"
+                    },
+                    "error": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Error message if verification failed"
+                    },
+                    "phone_data": {
+                        "type": "array",
+                        "nullable": true,
+                        "description": "Phone numbers linked to the email (only when `enrichMobile` is on)",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "number": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "Phone number"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "Phone type (for example mobile)"
+                                }
+                            }
+                        }
+                    },
+                    "phoneNumbers": {
+                        "type": "integer",
+                        "description": "Number of phone numbers returned in `phone_data`"
+                    },
+                    "charged": {
+                        "type": "boolean",
+                        "description": "Whether this request was charged (pay-per-event)"
+                    },
+                    "chargedCredits": {
+                        "type": "integer",
+                        "description": "Number of Tomba credits charged for this item (0 when free or cached)"
+                    },
+                    "cached": {
+                        "type": "boolean",
+                        "description": "Whether the result came from the cache (free)"
+                    }
+                }
+            }
+        }
+    }
+}

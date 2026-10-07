@@ -82,7 +82,7 @@ Every verdict (deliverable, undeliverable, risky, unknown) is a non-empty answer
 
 ## Architecture
 
-- `src/tomba.ts`: shared helper, identical in every Tomba Actor. It handles credentials, caching (`tomba-cache` key-value store), retries with exponential backoff, pay-per-event charging, budget reservation, the concurrency pool and resume state.
+- `src/tomba.ts`: shared helper, identical in every Tomba Actor. It handles credentials, caching (per-Actor `tomba-cache-<actorId>` key-value store; falls back to an in-run cache if it can't be opened), retries with exponential backoff, pay-per-event charging, budget reservation, the concurrency pool and resume state.
 - `src/main.ts`: input normalization (non-strings dropped, emails trimmed, lowercased and deduplicated) and output mapping. The Tomba `data` object (`email`, `sources`, and `phone_data` when returned) is spread into the row, followed by `input`, `phoneNumbers`, `charged`, `chargedCredits` and `cached`.
 - The SDK call is `Verifier.emailVerifier(email, enrich_mobile, webhook_url)` → `GET /email-verifier?email=…&enrich_mobile=true&webhook_url=…`. `enrich_mobile` is only sent when `enrichMobile` is on and `webhook_url` only when `webhookUrl` is set; both are part of the cache key, so results with and without phone data are cached separately.
 - The `tomba` SDK v1.1.1 resolves every call to `{ data, rateLimit }`, where `data` is the response body. Its `.d.ts` types still declare the old return type, so always go through `callTomba()`.
@@ -94,3 +94,30 @@ Every verdict (deliverable, undeliverable, risky, unknown) is a non-empty answer
 - `test/helpers.ts`: mock server and Actor runner (identical in every Actor)
 
 Locally, the Apify SDK prices every event at $1 when `ACTOR_TEST_PAY_PER_EVENT=true`, so the tests use `maxTotalChargeUsd` as an event count.
+
+## Standby mode (real-time API)
+
+`.actor/actor.json` sets `usesStandbyMode: true` and `webServerSchema: ./web_server_schema.json` (OpenAPI 3).
+
+- `src/standby.ts` (shared, identical in every Actor): `runActor()` runs a batch job, or, when `APIFY_META_ORIGIN=STANDBY`, starts an HTTP server on `Actor.config.get('containerPort')`.
+    - `GET /` with the `x-apify-container-server-readiness-probe` header, or with no query: readiness / usage.
+    - `GET /?…`: input built by `fromQuery()` from `email` / `emails` (repeated or comma-separated), `enrichMobile`, `webhookUrl` and `maxResults`.
+    - `POST /`: the same JSON input as a batch run.
+    - Responses: `200 { items }`, `400` invalid input, `402` max charge limit reached, `404`, `405`.
+- `run(input, ctx)` in `src/main.ts` is shared by both modes: `ctx.push()` writes to the dataset in batch runs and to the HTTP response in Standby; `ctx.isDone()`/`ctx.markDone()` persist resume state only in batch runs. Input errors throw `InputError` (failed run in batch, `400` in Standby). `maxResults` is enforced with `runPool()`'s `shouldStop` and a per-request counter, never with the global `stop()` (reserved for the charge limit).
+- Caching and pay-per-event charging work the same in both modes.
+
+Try it locally:
+
+```bash
+APIFY_META_ORIGIN=STANDBY ACTOR_WEB_SERVER_PORT=8080 TOMBA_API_KEY=ta_… TOMBA_API_SECRET=ts_… npm start
+curl "localhost:8080/?email=info@tomba.io"
+```
+
+## Key-value store schema
+
+`.actor/key_value_store_schema.json` documents the default key-value store records (`INPUT`, `TOMBA_STATE`). The cross-run cache lives in the separate named store `tomba-cache-<actorId>`, one per Actor: under limited permissions an Actor can only open named storages it created itself, so the Tomba Actors must not share one store. If the store can't be opened, the run logs a warning and caches for this run only.
+
+## Memory
+
+`defaultMemoryMbytes` is 256: the Actor only makes HTTP calls, so more memory just costs more.

@@ -20,6 +20,9 @@ All notable changes to this project will be documented in this file. See [standa
 - `enrichMobile` input: return the phone numbers linked to the email in `phone_data` (1 credit plus 5 per phone number returned)
 - `webhookUrl` input, sent to Tomba as `webhook_url`
 - Each dataset item now includes `phoneNumbers` and `chargedCredits`
+- Real-time API (Apify Standby mode): `GET /?email=…` or `POST /` with the run input returns results as JSON, with an OpenAPI web server schema
+- Key-value store schema for the default store (`INPUT`, `TOMBA_STATE`)
+- Default memory set to 256 MB
 
 ### Dependencies
 
