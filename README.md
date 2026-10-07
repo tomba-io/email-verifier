@@ -1,94 +1,70 @@
-# Tomba Email Verifier Actor
+# Tomba Email Verifier
 
-[![Actor](https://img.shields.io/badge/Apify-Actor-blue)](https://apify.com/actors)
-[![Tomba API](https://img.shields.io/badge/Tomba-API-green)](https://tomba.io)
-[![Rate Limit](https://img.shields.io/badge/Rate%20Limit-150%2Fmin-orange)](https://tomba.io/api)
+[![Price](https://img.shields.io/badge/Price-%243.12%20per%201K%20emails-brightgreen)](#pricing)
+[![No signup](https://img.shields.io/badge/Tomba%20account-not%20needed-blue)](#quick-start)
+[![No rate limit](https://img.shields.io/badge/Rate%20limit-none-brightgreen)](#built-for-big-lists)
 
-A powerful Apify Actor that **verifies the validity of any professional email address with the most complete email checker** using the **Tomba Email Verifier API**. Perfect for email marketing, lead generation, and data quality assurance by ensuring your email lists contain only valid, deliverable addresses.
+**Clean your email list before you hit send.** Paste your addresses and find out in seconds which ones are deliverable, which will bounce and which are risky, with a confidence score and the checks behind every verdict. Need to call them too? Turn on **Find phone numbers** to get the phone numbers linked to each address. Protect your sender reputation and stop paying to email people who will never receive it.
 
-## Key Features
+No Tomba account. No API key. No subscription. **You pay $0.00312 per email, and only when we return a verdict.**
 
-- **Complete Email Verification**: Comprehensive validity checks for professional email addresses
-- **Deliverability Testing**: Real-time SMTP validation and mailbox verification
-- **Risk Assessment**: Identify disposable, webmail, and risky email addresses
-- **Bulk Processing**: Verify hundreds of emails efficiently with rate limiting
-- **Rate Limited**: Respects Tomba's 150 requests per minute limit
-- **Rich Verification Data**: Detailed verification scores and technical checks
-- **Built-in Error Handling**: Robust processing with comprehensive error reporting
+## Why teams choose this Actor
 
-## How it works
+- **Start in 30 seconds**: Open the Actor, paste your emails, click Start. Nothing to sign up for
+- **Pay only for results**: Errors and invalid inputs are free
+- **$3.12 per 1,000 emails**: No monthly plan, no credits that expire, no minimum spend
+- **Real-time checks**: Format, domain, mail server and mailbox are checked live for every address
+- **Spot risky addresses**: Flags disposable, webmail, catch-all, greylisted and gibberish addresses
+- **Built for big lists**: No rate limit. Thousands of emails run in parallel
+- **Never pay twice**: Emails you verified in the last 24 hours come back from cache for free
+- **Export anywhere**: Download as CSV, Excel or JSON, or send results straight to your CRM or email tool with Apify integrations
 
-The Actor leverages Tomba's powerful Email Verifier API to perform comprehensive email validation:
+## Promises we actually keep
 
-### Process Flow
+- **Less than 5% bounce rate** — Every email is verified in real time before you're charged.
 
-1. **Authentication**: Connects to Tomba API using your credentials
-2. **Input Processing**: Accepts array of email addresses to verify
-3. **Email Verification**: Uses Tomba's `emailVerifier` method for each email
-4. **Validation Checks**: Performs regex, SMTP, MX record, and deliverability tests
-5. **Rate Limiting**: Automatically handles 150 requests/minute limit
-6. **Data Storage**: Saves detailed verification results to Apify dataset
+## What you can do with it
 
-### What You Get
+| Goal                            | How verification helps                                               |
+| ------------------------------- | -------------------------------------------------------------------- |
+| **Protect your domain**         | Keep bounces low so your emails keep landing in the inbox            |
+| **Clean old lists**             | Remove addresses that died since your last campaign                  |
+| **Check leads before outreach** | Verify every new prospect before it enters a sequence                |
+| **Stop fake sign-ups**          | Catch disposable and gibberish addresses in your forms               |
+| **Save on your email tool**     | Stop paying your email platform for contacts that can't receive mail |
 
-For each verified email, you'll receive:
+## Quick start
 
-- **Verification Result**: Valid, invalid, risky, or unknown status
-- **Confidence Score**: 0-100 score indicating verification confidence
-- **Technical Checks**: Regex validation, MX records, SMTP server status
-- **Risk Factors**: Disposable email detection, webmail identification
-- **Deliverability**: Accept-all domain detection, block status
-- **Quality Metrics**: Gibberish detection and comprehensive analysis
+1. Click **Try for free**
+2. Paste your addresses into **Email Addresses** (for example `john@stripe.com`)
+3. Click **Start**, then download your results as CSV, Excel or JSON
 
-## Quick Start
+That's it. No Tomba account or API key is needed.
 
-### Prerequisites
+## Input
 
-1. **Tomba Account**: Sign up at [Tomba.io](https://app.tomba.io/api) to get your API credentials
-
-### Getting Your API Keys
-
-1. Visit [Tomba API Dashboard](https://app.tomba.io/api)
-2. Copy your **API Key** (starts with `ta_`)
-3. Copy your **Secret Key** (starts with `ts_`)
-
-## Input Configuration
-
-### Required Parameters
-
-| Parameter        | Type     | Description                        |
-| ---------------- | -------- | ---------------------------------- |
-| `tombaApiKey`    | `string` | Your Tomba API key (ta_xxxx)       |
-| `tombaApiSecret` | `string` | Your Tomba secret key (ts_xxxx)    |
-| `emails`         | `array`  | Array of email addresses to verify |
-
-### Optional Parameters
-
-| Parameter    | Type     | Default | Description                         |
-| ------------ | -------- | ------- | ----------------------------------- |
-| `maxResults` | `number` | `50`    | Maximum number of results to return |
-
-### Example Input
+| Field            | Required | Default | Description                                                                                                    |
+| ---------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| `emails`         | Yes      |         | Email addresses to verify (up to 1,000 per run)                                                                |
+| `maxResults`     | No       | `50`    | Maximum number of emails to verify                                                                             |
+| `enrichMobile`   | No       | `false` | Also return the phone numbers linked to each email. Each phone number adds 5 credits (see [Pricing](#pricing)) |
+| `webhookUrl`     | No       |         | URL (`http://` or `https://`) that Tomba notifies when a result is ready                                       |
+| `maxConcurrency` | No       | `10`    | How many emails to verify at the same time (1–50)                                                              |
+| `maxRetries`     | No       | `3`     | How many times to retry a temporary failure (0–10)                                                             |
+| `useCache`       | No       | `true`  | Reuse results from your previous runs for free                                                                 |
+| `cacheTtlHours`  | No       | `24`    | How long cached results stay valid (`0` turns the cache off)                                                   |
 
 ```json
 {
-    "tombaApiKey": "ta_xxxxxxxxxxxxxxxxxxxx",
-    "tombaApiSecret": "ts_xxxxxxxxxxxxxxxxxxxx",
-    "emails": ["john.doe@company.com", "sales@example.org", "support@startup.io", "invalid@fakeemail.xyz"],
-    "maxResults": 100
+    "emails": ["john@stripe.com", "jane@shopify.com", "support@tomba.io"],
+    "maxResults": 1000,
+    "enrichMobile": false
 }
 ```
 
-### Best Practices
+## Output
 
-- **Email Quality**: Use properly formatted email addresses for best results
-- **Rate Limits**: The Actor automatically handles Tomba's 150 requests/minute limit
-- **Batch Size**: Process 50-100 emails at a time for optimal performance
-- **Data Cleaning**: Pre-filter obvious invalid formats to save API credits
-
-## Output Data Structure
-
-The Actor returns comprehensive verification information for each email:
+You get one row per email:
 
 ```json
 {
@@ -98,21 +74,13 @@ The Actor returns comprehensive verification information for each email:
         "status": "valid",
         "score": 99,
         "smtp_provider": "Google Workspace",
-        "mx": {
-            "records": [
-                "aspmx.l.google.com",
-                "alt2.aspmx.l.google.com",
-                "alt1.aspmx.l.google.com",
-                "alt4.aspmx.l.google.com",
-                "alt3.aspmx.l.google.com"
-            ]
-        },
+        "mx": { "records": ["aspmx.l.google.com", "alt1.aspmx.l.google.com"] },
         "mx_check": true,
         "smtp_server": true,
         "smtp_check": true,
         "accept_all": false,
         "greylisted": false,
-        "block": true,
+        "block": false,
         "gibberish": false,
         "disposable": false,
         "webmail": false,
@@ -125,209 +93,130 @@ The Actor returns comprehensive verification information for each email:
     },
     "sources": [
         {
-            "uri": "https://github.com/tomba-io/generic-emails/blob/084fc1a63d3cdaf9a34f255bedc2baea49a8e8b9/src/lib/validation/hash.ts",
+            "uri": "https://github.com/tomba-io/generic-emails",
             "website_url": "github.com",
             "extracted_on": "2021-02-08T20:09:54+01:00",
             "last_seen_on": "2021-02-08T22:43:40+01:00",
             "still_on_page": true
         }
     ],
-    "input": "b.mohamed@tomba.io"
+    "phone_data": [{ "number": "+14155550123", "type": "mobile" }],
+    "input": "b.mohamed@tomba.io",
+    "phoneNumbers": 1,
+    "charged": true,
+    "chargedCredits": 6,
+    "cached": false
 }
 ```
 
-### Data Fields Explained
+| Field                 | Description                                                       |
+| --------------------- | ----------------------------------------------------------------- |
+| `email.email`         | The verified address                                              |
+| `email.result`        | The verdict: `deliverable`, `undeliverable`, `risky` or `unknown` |
+| `email.status`        | The status, e.g. `valid` or `invalid`                             |
+| `email.score`         | Confidence score from 0 to 100 (higher is better)                 |
+| `email.smtp_provider` | The email provider, e.g. Google Workspace                         |
+| `email.regex`         | `true` if the address is correctly formatted                      |
+| `email.gibberish`     | `true` if the address looks random                                |
+| `email.disposable`    | `true` if it is a temporary, throwaway address                    |
+| `email.webmail`       | `true` if it is a free webmail address such as Gmail              |
+| `email.mx_check`      | `true` if the domain has mail servers                             |
+| `email.mx`            | The domain's mail servers                                         |
+| `email.smtp_server`   | `true` if the mail server answered                                |
+| `email.smtp_check`    | `true` if the mailbox exists                                      |
+| `email.accept_all`    | `true` if the domain accepts every address (catch-all)            |
+| `email.greylisted`    | `true` if the mail server asked us to try again later             |
+| `email.block`         | `true` if the mail server blocked the check                       |
+| `email.whois`         | Domain registrar and creation date                                |
+| `sources`             | Public web pages where the address was found                      |
+| `phone_data`          | Phone numbers linked to the address (only with `enrichMobile`)    |
+| `phoneNumbers`        | How many phone numbers were returned                              |
+| `input`               | The address you submitted (lowercased)                            |
+| `charged`             | `true` if this verification was billed                            |
+| `chargedCredits`      | Credits billed for this row (1, plus 5 per phone number)          |
+| `cached`              | `true` if this result came from the cache (free)                  |
+| `error`               | Why no verdict was returned, if applicable                        |
 
-#### Email Verification Object
+The dataset has three ready-made views: **Overview**, **Detailed View** and **Source Analysis**.
 
-- **email**: The verified email address
-- **result**: Deliverability status (deliverable, undeliverable, risky, unknown)
-- **status**: Validation status (valid, invalid, risky, unknown)
-- **score**: Confidence level from 0-100 (higher is better)
-- **smtp_provider**: Email provider name (e.g., "Google Workspace", "Microsoft Exchange")
+## Pricing
 
-#### Technical Validation
+**$0.00312 per credit.** Verifying an email costs 1 credit ($3.12 per 1,000 emails). No subscription and no Tomba account needed.
 
-- **regex**: Whether email passes basic format validation
-- **gibberish**: Whether email appears to be random/meaningless
-- **disposable**: Whether email is from a temporary email service
-- **webmail**: Whether email is from Gmail, Yahoo, etc.
-- **mx_check**: Whether MX records check passed
-- **smtp_server**: Whether SMTP server is reachable
-- **smtp_check**: Whether SMTP validation was successful
-- **accept_all**: Whether domain accepts all email addresses
-- **greylisted**: Whether the email is greylisted
-- **block**: Whether email is on a blocklist
+| Result                                          | Credits | Price    |
+| ----------------------------------------------- | ------- | -------- |
+| Email verification                              | 1       | $0.00312 |
+| `enrichMobile` on, no phone number found        | 1       | $0.00312 |
+| `enrichMobile` on, 1 phone number returned      | 6       | $0.01872 |
+| `enrichMobile` on, 2 phone numbers returned     | 11      | $0.03432 |
+| `enrichMobile` on, each additional phone number | +5      | +$0.0156 |
 
-#### Additional Data
+Phone data adds $0.0156 (5 credits) per phone number returned, and only when `enrichMobile` is on.
 
-- **mx**: Object containing MX record servers array
-- **whois**: Domain registration information (registrar, creation date, etc.)
-- **sources**: Array of sources where the email was found online
-- **input**: Original input email address for reference
+You are only charged when Tomba returns a verdict:
 
-## Use Cases
+| What happens                                    | Charged |
+| ----------------------------------------------- | ------- |
+| The email is verified (deliverable)             | Yes     |
+| The email is verified (undeliverable or risky)  | Yes     |
+| No verdict returned                             | No      |
+| Malformed address or any other error            | No      |
+| Temporary failure (it is retried automatically) | No      |
+| Result served from the cache                    | No      |
 
-### Email Marketing
+Every row shows `charged`, `chargedCredits` and `cached`, so you always know what you paid for. To cap your spend, set **Maximum cost per run** in the run options: the Actor stops cleanly when the limit is reached.
 
-- **List Cleaning**: Remove invalid emails before campaigns
-- **Bounce Reduction**: Prevent hard bounces and protect sender reputation
-- **Quality Assurance**: Ensure high deliverability rates
+## Built for big lists
 
-### Lead Generation
+- **No rate limit**: up to 50 emails are verified at the same time
+- **Automatic retries**: temporary failures are retried for you, and never billed
+- **Resumable**: if a run is interrupted, it continues where it stopped without charging you again
+- **Cache**: repeat verifications within 24 hours are free
+- **No duplicates**: addresses are trimmed and lowercased, and duplicates are verified once
 
-- **Lead Qualification**: Verify contact information quality
-- **Data Validation**: Clean imported lead lists
-- **CRM Integration**: Maintain clean contact databases
+## Integrations
 
-### Data Quality
-
-- **Database Maintenance**: Regular cleanup of email databases
-- **Import Validation**: Verify emails during data import
-- **Compliance**: Ensure GDPR/CAN-SPAM compliance with valid contacts
-
-### Risk Management
-
-- **Fraud Prevention**: Identify disposable and risky email addresses
-- **User Registration**: Validate emails during account creation
-- **Security**: Block known problematic email domains
-
-## Verification Views
-
-The Actor provides specialized data views:
-
-### Overview View
-
-Quick summary showing email, result, score, and key flags
-
-### Valid Emails View
-
-Filtered view showing only successfully verified emails
-
-### Invalid Emails View
-
-Focus on failed verifications with error details
-
-### Verification Errors View
-
-Troubleshoot processing issues and API errors
-
-## Resources & Documentation
-
-### API Documentation
-
-- [Tomba API Docs](https://tomba.io/api) - Complete API reference
-- [Email Verifier Endpoint](https://docs.tomba.io/api/verifier#email-verifier) - Specific verification documentation
-- [Authentication Guide](https://app.tomba.io/api) - Get your API keys
-- [Pricing & Limits](https://tomba.io/pricing) - Understand rate limits and costs
-
-### Rate Limiting
-
-- Tomba limits to **150 requests per minute**
-- Actor automatically handles rate limiting with delays
-- Large email lists may take time to complete
-
-### Cost Considerations
-
-- Each email verification = 1 Tomba API request
-- Monitor your Tomba usage dashboard
-- Consider Tomba's pricing tiers for volume usage
-
-### Best Practices
-
-- **Pre-filtering**: Remove obvious invalid formats before verification
-- **Batch Processing**: Group verifications for efficiency
-- **Result Interpretation**: Use score and multiple flags for decision making
-- **Regular Cleaning**: Periodically re-verify older email lists
+Run it on a schedule, call it from the Apify API, or connect it to Zapier, Make, Google Sheets, HubSpot, Slack and hundreds of other apps with [Apify integrations](https://docs.apify.com/platform/integrations). Webhooks let you trigger your own workflow as soon as a run finishes.
 
 ## FAQ
 
-### General Questions
+**Do I need a Tomba account or API key?**
+No. Everything is built in. You only pay the per-email price on Apify.
 
-**Q: What does email verification do?**
-A: Email verification checks if an email address is valid, deliverable, and safe to send to. It validates syntax, domain existence, mailbox availability, and identifies risky addresses.
+**How much does it cost?**
+$0.00312 per verified email ($3.12 per 1,000). An undeliverable verdict is still a verdict, so it is charged. With `enrichMobile` on, each phone number returned adds $0.0156. Errors and cached lookups are free.
 
-**Q: How accurate is email verification?**
-A: Tomba's verification is highly accurate (95%+) for most standard email providers. Results include confidence scores and detailed status information to help you make informed decisions.
+**Can I get phone numbers too?**
+Yes. Turn on **Find phone numbers** (`enrichMobile`). Numbers come back in `phone_data`, and `phoneNumbers` tells you how many. Each phone number returned adds 5 credits ($0.0156) to the 1-credit verification, so an email with 2 numbers costs 11 credits ($0.03432). If no phone number is found you pay the normal 1 credit. Phone lookups are off by default.
 
-**Q: What's the difference between syntax and deliverability checking?**
-A: Syntax checking validates the email format (user@domain.com), while deliverability checking contacts the mail server to verify the mailbox actually exists and can receive mail.
+**How many emails can I verify in one run?**
+Up to 1,000 per run, processed in parallel. There is no rate limit.
 
-### Verification Results
+**What does each verdict mean?**
+`deliverable` means the mailbox exists and accepts mail. `undeliverable` means it will bounce. `risky` means the address may work but carries a risk, for example a catch-all domain or a disposable address. `unknown` means the mail server didn't give a clear answer.
 
-**Q: What do the different verification statuses mean?**
-A:
+**Should I email "risky" addresses?**
+Use the score and the flags to decide. Catch-all addresses at real companies are often fine. Disposable and gibberish addresses are best removed.
 
-- **Valid**: Email exists and can receive mail
-- **Invalid**: Email doesn't exist or can't receive mail
-- **Risky**: Email might bounce or be problematic
-- **Unknown**: Verification couldn't be completed
+**Do you send an email to the address?**
+No. We check the address with the mail server without sending anything, so the person is never contacted.
 
-**Q: What is a verification score?**
-A: Scores range 0-100 indicating confidence level. 90+ is high confidence, 70-89 is moderate, below 70 suggests caution. Use scores along with status for best results.
+**What if my run is interrupted?**
+It picks up where it stopped. Emails already verified are not charged again.
 
-**Q: What are catch-all domains?**
-A: Catch-all domains accept emails to any address at that domain, even non-existent ones. They're marked as "risky" because you can't verify if the specific mailbox exists.
-
-**Q: How should I handle "risky" emails?**
-A: Risky emails might include catch-all domains, role accounts, or temporary emails. Consider your use case - they might be fine for newsletters but problematic for transactional emails.
-
-### Technical Questions
-
-**Q: How many emails can I verify at once?**
-A: You can submit up to 1000 emails per run. For optimal performance, process 50-200 emails per batch.
-
-**Q: What are the rate limits?**
-A: The Actor automatically handles Tomba's rate limits. Large batches will be processed with appropriate delays to stay within limits.
-
-**Q: Can I verify emails in real-time?**
-A: Yes, but for real-time use cases, consider the API response time (typically 1-3 seconds per email). Batch processing is more efficient for large lists.
-
-**Q: Do you store or cache verification results?**
-A: Tomba may cache results temporarily for performance. The Actor doesn't store your email lists - data is processed and returned through Apify's secure infrastructure.
-
-### Email List Management
-
-**Q: How often should I re-verify emails?**
-A: Re-verify emails every 3-6 months, as email validity changes over time. High-bounce lists may need more frequent verification.
-
-**Q: Should I remove all risky emails?**
-A: Not necessarily. Review risky emails case-by-case. Some might be legitimate business emails that are just hard to verify due to server configurations.
-
-**Q: What about role-based emails (info@, sales@)?**
-A: Role emails are flagged as "role-based" but may still be valid for business communications. Consider your specific use case.
-
-**Q: How do I handle large email lists?**
-A: Break large lists into smaller batches (200-500 emails). Monitor your API quota and consider Tomba's higher-tier plans for volume processing.
-
-### Privacy & Compliance
-
-**Q: Is email verification GDPR compliant?**
-A: Yes, verification only checks deliverability without accessing email content. However, ensure you have permission to verify the email addresses you're checking.
-
-**Q: Do you notify email owners during verification?**
-A: No, verification is done through server-level checks that don't send actual emails or notify the email owners.
-
-**Q: Can I verify international email addresses?**
-A: Yes, Tomba supports verification for email addresses worldwide, including international domains and various country-specific providers.
-
-## Keywords
-
-email verification, email validation, email checker, deliverability, bounce detection, email quality, contact validation, email hygiene, email list cleaning, invalid emails, verification service, email testing
+**How do I limit what I spend?**
+Set **Maximum cost per run** before you start. The Actor stops as soon as the limit is reached.
 
 ## Support
 
-If you need any help, have questions, or encounter any issues while using Tomba.io, please don't hesitate to reach out to our support team. You can contact us via:
+Questions or feedback? We're happy to help:
 
 - **Email**: support@tomba.io
-- **Live chat**: Available on the Tomba.io website during business hours
-
-## Contributing
-
-We welcome contributions to improve this actor. Please feel free to submit issues, feature requests, or pull requests to help make this tool even better for the community.
+- **Live chat**: on [tomba.io](https://tomba.io) during business hours
+- **Issues**: use the **Issues** tab on this Actor's page
 
 ## About Tomba
 
-Founded in 2020, Tomba prides itself on being the most reliable, accurate, and in-depth source of email address data available anywhere. We process terabytes of data to produce our Email finder API.
+Founded in 2020, [Tomba](https://tomba.io) is a B2B data platform for finding, verifying and enriching business contacts. Our Email Finder, Domain Search and Email Verifier help sales and marketing teams reach the right people.
 
 ![Tomba Logo](https://tomba.io/logo.png)

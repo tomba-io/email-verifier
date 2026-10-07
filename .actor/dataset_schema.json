@@ -137,9 +137,42 @@
             "error": {
                 "type": ["string", "null"],
                 "description": "Error message if verification failed"
+            },
+            "phone_data": {
+                "type": ["array", "null"],
+                "description": "Phone numbers linked to the email (only when `enrichMobile` is on)",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "number": {
+                            "type": ["string", "null"],
+                            "description": "Phone number"
+                        },
+                        "type": {
+                            "type": ["string", "null"],
+                            "description": "Phone type (for example mobile)"
+                        }
+                    }
+                }
+            },
+            "phoneNumbers": {
+                "type": "integer",
+                "description": "Number of phone numbers returned in `phone_data`"
+            },
+            "charged": {
+                "type": "boolean",
+                "description": "Whether this request was charged (pay-per-event)"
+            },
+            "chargedCredits": {
+                "type": "integer",
+                "description": "Number of Tomba credits charged for this item (0 when free or cached)"
+            },
+            "cached": {
+                "type": "boolean",
+                "description": "Whether the result came from the cache (free)"
             }
         },
-        "required": ["email", "input"]
+        "required": ["input"]
     },
     "views": {
         "overview": {
@@ -203,7 +236,12 @@
                     "email.block",
                     "email.whois",
                     "sources",
-                    "input"
+                    "input",
+                    "phone_data",
+                    "phoneNumbers",
+                    "charged",
+                    "chargedCredits",
+                    "cached"
                 ]
             },
             "display": {

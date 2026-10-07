@@ -2,8 +2,8 @@
     "actorSpecification": 1,
     "name": "email-verifier",
     "title": "Tomba Email Verifier",
-    "description": "Email verification service using Tomba API.",
-    "version": "0.0",
+    "description": "Verify email addresses (and optionally find their phone numbers) using the Tomba API.",
+    "version": "1.0",
     "buildTag": "latest",
     "meta": {
         "templateId": "ts-empty"
@@ -13,5 +13,9 @@
     "output": "./output_schema.json",
     "storages": {
         "dataset": "./dataset_schema.json"
+    },
+    "environmentVariables": {
+        "TOMBA_API_KEY": "@tombaApiKey",
+        "TOMBA_API_SECRET": "@tombaApiSecret"
     }
 }
