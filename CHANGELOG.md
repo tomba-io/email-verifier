@@ -38,6 +38,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+- Dataset schema accepts `null` for every Tomba field and a boolean or string `phone_number`, so Apify's item validation can't fail a run
 - **docs:** update Email Verifier Endpoint link to the correct documentation ([cd6dfaa](https://github.com/tomba-io/email-verifier/commit/cd6dfaa42535a7833a010af0a82bc2d1ae40e7e2))
 - **schema:** add prefill ([9763a6e](https://github.com/tomba-io/email-verifier/commit/9763a6e3e61d22612cf4bacd6c9f10cdeded5183))
 - **schema:** allow null values for MX records and WHOIS properties ([c0fb905](https://github.com/tomba-io/email-verifier/commit/c0fb9052fc9ce90e61df9455771272f5fb20273a))

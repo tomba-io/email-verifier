@@ -9,7 +9,7 @@
                 "description": "Email verification data object",
                 "properties": {
                     "email": {
-                        "type": "string",
+                        "type": ["string", "null"],
                         "description": "The email address that was verified"
                     },
                     "result": {
@@ -108,23 +108,23 @@
                     "type": "object",
                     "properties": {
                         "uri": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "Source URI where email was found"
                         },
                         "website_url": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "Website URL of the source"
                         },
                         "extracted_on": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "Date when email was extracted"
                         },
                         "last_seen_on": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "Date when email was last seen"
                         },
                         "still_on_page": {
-                            "type": "boolean",
+                            "type": ["boolean", "null"],
                             "description": "Whether email is still on the page"
                         }
                     }
